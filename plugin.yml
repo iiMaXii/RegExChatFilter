@@ -1,6 +1,6 @@
-name: ColorFilter
+name: RegExChatFilter
 version: 0.1
 author: iiMaXii
 website: http://www.djupfryst.com/
 
-main: com.djupfryst.ChatFilter.ChatFilter
+main: com.djupfryst.RegExChatFilter.RegExChatFilter
