@@ -12,14 +12,14 @@ public class Log {
 	private final static Logger LOGGER = Logger.getLogger("Minecraft");
 
 	public final static void info(String msg) {
-		LOGGER.info("[ColorFilter] " + msg);
+		LOGGER.info("[RegExChatFilter] " + msg);
 	}
 
 	public final static void warning(String msg) {
-		LOGGER.warning("[ColorFilter] " + msg);
+		LOGGER.warning("[RegExChatFilter] " + msg);
 	}
 
 	public final static void severe(String msg) {
-		LOGGER.severe("[ColorFilter] " + msg);
+		LOGGER.severe("[RegExChatFilter] " + msg);
 	}
 }
