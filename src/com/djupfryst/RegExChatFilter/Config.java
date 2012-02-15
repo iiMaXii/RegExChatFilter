@@ -39,10 +39,10 @@ public class Config {
 	public Pattern[] getFilterPatterns() {
 		// Load the patterns to a list of strings
 		List<String> stringPatterns = config.getStringList("filter");
-		if (stringPatterns == null || stringPatterns.size() == 0) {
-			if (stringPatterns == null)
-				stringPatterns = new LinkedList<String>();
-
+		if (stringPatterns == null)
+			stringPatterns = new LinkedList<String>();
+		
+		if (stringPatterns.size() == 0) {
 			String stringPattern = config.getString("filter");
 			if (stringPattern != null) {
 				stringPatterns.add(stringPattern);
@@ -58,7 +58,7 @@ public class Config {
 				Log.warning("The pattern \"" + stringPatterns.get(i) + "\" is not a valid regular expression.");
 			}
 		}
-		Log.info("Successfully compiled " + stringPatterns.size() + " of " + patterns.size() + " patterns");
+		Log.info("Successfully compiled " + patterns.size() + " of " + stringPatterns.size() + " patterns");
 
 		// Convert to an array
 		Pattern[] filterPatterns;
