@@ -1,6 +1,12 @@
 name: RegExChatFilter
-version: 0.2
+version: 0.3
 author: iiMaXii
 website: http://www.djupfryst.com/
 
 main: com.djupfryst.RegExChatFilter.RegExChatFilter
+
+commands:
+   regex:
+      description: Reload the RegEx filters from the configuration file
+      permission: regex.reload
+      usage: /regex reload
