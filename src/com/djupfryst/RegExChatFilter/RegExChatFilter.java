@@ -1,5 +1,9 @@
 package com.djupfryst.RegExChatFilter;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -8,15 +12,33 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author iiMaXii (theiiMaXii at gmail dot com)
  * 
  */
-public class RegExChatFilter extends JavaPlugin {
-	public void onEnable() {
-		Config config = new Config(this);
-		getServer().getPluginManager().registerEvents(new ChatListener(config.getFilterPatterns(), config.getMode()), this);
+public class RegExChatFilter extends JavaPlugin implements CommandExecutor {
+	private Config config;
+	private ChatListener chatListener;
 
-		Log.info("Version " + getDescription().getVersion() + ". Enabled");
+	public void onEnable() {
+		config = new Config(this);
+		chatListener = new ChatListener(config.getFilterPatterns());
+
+		getServer().getPluginManager().registerEvents(chatListener, this);
 	}
 
 	public void onDisable() {
-		Log.info("Version " + getDescription().getVersion() + ". Disabled");
+	}
+
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (args.length == 1 && args[0].toLowerCase().equals("reload")) {
+
+			if (config.reload()) {
+				chatListener.setPatterns(config.getFilterPatterns());
+				sender.sendMessage(ChatColor.GRAY + "The configuration has been reloaded.");
+			} else {
+				sender.sendMessage(ChatColor.RED + "An error occured when trying to reload the configuration file.");
+			}
+
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
