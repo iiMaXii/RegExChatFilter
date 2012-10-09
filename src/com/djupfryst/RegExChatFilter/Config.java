@@ -17,10 +17,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  */
 public class Config {
+	private File file;
 	private YamlConfiguration config = new YamlConfiguration();
 
 	public Config(RegExChatFilter plugin) {
-		File file = new File(plugin.getDataFolder(), "config.yml");
+		file = new File(plugin.getDataFolder(), "config.yml");
 
 		if (!file.exists()) {
 			file.getParentFile().mkdir();
@@ -36,12 +37,24 @@ public class Config {
 		}
 	}
 
+	public boolean reload() {
+		try {
+			config.load(file);
+			return true;
+		} catch (IOException e) {
+			Log.warning("Could not reload the file configuration file");
+		} catch (InvalidConfigurationException e) {
+			Log.warning("Could not reload the file configuration file, invalid configuration");
+		}
+		return false;
+	}
+
 	public Pattern[] getFilterPatterns() {
 		// Load the patterns to a list of strings
 		List<String> stringPatterns = config.getStringList("filter");
 		if (stringPatterns == null)
 			stringPatterns = new LinkedList<String>();
-		
+
 		if (stringPatterns.size() == 0) {
 			String stringPattern = config.getString("filter");
 			if (stringPattern != null) {
@@ -66,9 +79,5 @@ public class Config {
 		patterns.toArray(filterPatterns);
 
 		return filterPatterns;
-	}
-
-	public byte getMode() {
-		return (byte) config.getInt("mode");
 	}
 }
