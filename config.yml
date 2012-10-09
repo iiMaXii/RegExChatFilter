@@ -2,14 +2,7 @@
 #You may use multiple filters by typing:
 #filter:
 # - "§[0-9a-f]" # Filter colours
-# - "§[^0-9a-f]" # Filter any weird non-colour characters
+# - "§k" # Filter the "funky" text
 #
 #Note: all filters are case-insensitive
 filter: "§." # Filter all colours and weird characters
-
-#The mode option specifies how the event should be handled:
-# 0: The plugin tries to be the first to process the chat message, then filters it.
-# 1: Same as above, but cancels the event and resends the filtered message.
-#
-# Note: mode 0 does not work for commands.
-mode: 1
