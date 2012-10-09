@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
@@ -18,19 +18,19 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
  */
 public class ChatListener implements Listener {
 	private Pattern[] patterns;
-	private byte mode;
 
-	public ChatListener(Pattern[] patterns, byte mode) {
+	public ChatListener(Pattern[] patterns) {
 		this.patterns = patterns;
-		this.mode = mode;
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerChat(PlayerChatEvent event) {
+	public void setPatterns(Pattern[] patterns) {
+		this.patterns = patterns;
+	}
+
+	private String filter(String string) {
 		// Make sure our string is in UTF-8
-		String message = event.getMessage();
 		try {
-			message = new String(message.getBytes("UTF-8"));
+			string = new String(string.getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			Log.severe("This system does not support UTF-8, what a shame.");
 		}
@@ -38,25 +38,31 @@ public class ChatListener implements Listener {
 		// Replace the patterns
 		boolean isFiltered = false;
 		for (Pattern pattern : patterns) {
-			Matcher matcher = pattern.matcher(message);
+			Matcher matcher = pattern.matcher(string);
 			if (matcher.find()) {
-				message = matcher.replaceAll("");
+				string = matcher.replaceAll("");
 				isFiltered = true;
 			}
 		}
 
-		if (isFiltered) {
-			if (mode == 0) {
-				event.setMessage(message);
-			} else {
-				event.setCancelled(true);
-				event.getPlayer().chat(message);
-			}
+		return (isFiltered) ? string : null;
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
+		String message = filter(event.getMessage());
+
+		if (message != null) {
+			event.setMessage(message);
 		}
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-		onPlayerChat((PlayerChatEvent) event);
+		String message = filter(event.getMessage());
+
+		if (message != null) {
+			event.setMessage(message);
+		}
 	}
 }
